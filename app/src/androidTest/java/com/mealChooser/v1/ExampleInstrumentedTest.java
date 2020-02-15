@@ -1,4 +1,4 @@
-package com.example.myfirstapp;
+package com.mealChooser.v1;
 
 import android.content.Context;
 

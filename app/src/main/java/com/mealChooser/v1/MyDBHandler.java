@@ -1,4 +1,4 @@
-package com.example.myfirstapp;
+package com.mealChooser.v1;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -11,8 +11,10 @@ public class MyDBHandler extends SQLiteOpenHelper{
     private static final String DATABASE_NAME = "meals.db";
     public static final String TABLE_PRODUCTS = "meals";
     public static final String COLUMN_ID = "_id";
-    public static final String COLUMN_MEALPIC ="mealpic";
-    public static final String COLUMN_MEALNAME ="mealname";
+    public static final String COLUMN_MEALPIC ="mealPic";
+    public static final String COLUMN_MEALNAME ="mealName";
+    public static final String COLUMN_MEALDESCRIPTION ="mealDescription";
+    public static final String COLUMN_MEALRECIPE ="mealRecipe";
 
 
     public MyDBHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
@@ -20,7 +22,8 @@ public class MyDBHandler extends SQLiteOpenHelper{
     }
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String query = "CREATE TABLE "+TABLE_PRODUCTS+ "(" + COLUMN_ID +" INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_MEALPIC +"  TEXT," + COLUMN_MEALNAME + "  TEXT "+");";
+        String query = "CREATE TABLE "+TABLE_PRODUCTS+ "(" + COLUMN_ID +" INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_MEALPIC +"  TEXT," + COLUMN_MEALNAME + "  TEXT,"+
+                COLUMN_MEALDESCRIPTION + "  TEXT ,"+ COLUMN_MEALRECIPE + "  TEXT "+");";
         db.execSQL(query);
     }
     @Override
@@ -33,19 +36,25 @@ public class MyDBHandler extends SQLiteOpenHelper{
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("DELETE FROM "+TABLE_PRODUCTS+" WHERE "+COLUMN_MEALNAME+"=\""+ mealname+"\";");
     }
-
+    public void updateProduct(String mealname,String newDescription, String newRecipe) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("UPDATE "+TABLE_PRODUCTS+" SET "+ COLUMN_MEALDESCRIPTION+ "=\""+ newDescription+ "\"" + " WHERE "+COLUMN_MEALNAME+"=\""+ mealname+"\";");
+        db.execSQL("UPDATE "+TABLE_PRODUCTS+" SET "+ COLUMN_MEALRECIPE+ "=\""+ newRecipe+ "\"" + " WHERE "+COLUMN_MEALNAME+"=\""+ mealname+"\";");
+//        String strSQL = "UPDATE "+TABLE_PRODUCTS+" SET "+ COLUMN_MEALDESCRIPTION+"=\""+ newDescription + "\" WHERE "+COLUMN_MEALNAME+"=\""+ mealname+"\"";
+//        db.execSQL(strSQL);
+    }
     public void addProduct(Meals meal) {
         ContentValues values = new ContentValues();
         values.put(COLUMN_MEALPIC,meal.getPath());
         values.put(COLUMN_MEALNAME,meal.getName());
+        values.put(COLUMN_MEALDESCRIPTION,meal.getMealDescription());
+        values.put(COLUMN_MEALRECIPE,meal.getMealRecipe());
         SQLiteDatabase db = getWritableDatabase();
         db.insert(TABLE_PRODUCTS,null,values);
         db.close();
     }
-    //public void deleteProduct(String name)
     public LinkedHashMap<Integer, List<String>> databaseToString(){
         LinkedHashMap<Integer, List<String>> map = new LinkedHashMap<Integer, List<String>>();
-        //String dbString="";
         SQLiteDatabase db = getWritableDatabase();
         String query = "SELECT * FROM "+TABLE_PRODUCTS+" WHERE 1";
         Cursor c = db.rawQuery(query,null);
@@ -54,10 +63,12 @@ public class MyDBHandler extends SQLiteOpenHelper{
         int i = 0;
         while(!c.isAfterLast()){
             List<String> l = new ArrayList<>();
-            if(c.getString(c.getColumnIndex("mealname"))!=null) {
-                if(c.getString(c.getColumnIndex("mealpic"))!=null) {
-                    l.add(c.getString(c.getColumnIndex("mealname")));
-                    l.add(c.getString(c.getColumnIndex("mealpic")));
+            if(c.getString(c.getColumnIndex("mealName"))!=null) {
+                if(c.getString(c.getColumnIndex("mealPic"))!=null) {
+                    l.add(c.getString(c.getColumnIndex("mealName")));
+                    l.add(c.getString(c.getColumnIndex("mealPic")));
+                    l.add(c.getString(c.getColumnIndex("mealDescription")));
+                    l.add(c.getString(c.getColumnIndex("mealRecipe")));
                     map.put(i,l);
                 }
             }

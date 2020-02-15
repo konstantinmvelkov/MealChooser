@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">My First App</string>
-    <item type="id" name="clickedValue" />
-    <item type="id" name="name" />
+    <item name="isClicked" type="id" />
+    <item name="name" type="id" />
+    <item name="picturePath" type="id" />
+    <item name="description" type="id" />
+    <item name="recipe" type="id" />
 </resources>
