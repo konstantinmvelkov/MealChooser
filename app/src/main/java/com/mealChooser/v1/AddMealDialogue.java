@@ -34,7 +34,7 @@ public class AddMealDialogue extends AppCompatDialogFragment {
         View view = inflater.inflate(layout.add_meal_custom_dialogue,null);
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
-        Bitmap bitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeFile(picturePath), 300, 300, true);
+        Bitmap bitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeFile(picturePath), 500, 500, true);
         name = view.findViewById(R.id.dialogueMealName);
         description = view.findViewById(R.id.dialogueMealDescription);
         recipe = view.findViewById(R.id.dialogueMealRecipe);

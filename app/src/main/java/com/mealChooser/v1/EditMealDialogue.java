@@ -40,14 +40,15 @@ public class EditMealDialogue extends AppCompatDialogFragment {
 
         name = view.findViewById(R.id.dialogueMealName);
         name.setText(String.valueOf(clickedButton.getTag(R.id.name)));
-
+        name.setFocusable(false);
+        name.setClickable(false);
         description = view.findViewById(R.id.dialogueMealDescription);
         description.setText(String.valueOf(clickedButton.getTag(R.id.description)));
 
         recipe = view.findViewById(R.id.dialogueMealRecipe);
         recipe.setText(String.valueOf(clickedButton.getTag(R.id.recipe)));
 
-        Bitmap bitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeFile(String.valueOf(clickedButton.getTag(R.id.picturePath))), 300, 300, true);
+        Bitmap bitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeFile(String.valueOf(clickedButton.getTag(R.id.picturePath))), 500, 500, true);
         image = view.findViewById(R.id.dialogueMealPicture);
         image.setImageBitmap(BitmapFactory.decodeFile(picturePath));
         image.setImageBitmap(bitmap);

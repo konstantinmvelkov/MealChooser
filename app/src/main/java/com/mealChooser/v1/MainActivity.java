@@ -43,12 +43,14 @@ public class MainActivity extends AppCompatActivity implements AddMealDialogue.A
     private String m_Text = "";
     private static int RESULT_LOAD_IMAGE = 1;
     List<ImageButton> buttons;
-    List<String> meals;
+    List<ImageButton> mealsSelected;
     TextView choiceText;
-
+    Button searchWeb;
     MyDBHandler dbHandler;
     ImageButton uploadBtn;
     Button chooseBtn;
+    ImageView choiceMealImage;
+    private String selectedMealName="";
     private int STORAGE_PERMISSION_CODE = 1;
 
     void setMealImageButtonListeners(final ImageButton clickedButton) {
@@ -56,12 +58,14 @@ public class MainActivity extends AppCompatActivity implements AddMealDialogue.A
             @Override
             public void onClick(View v) {
                 if (Boolean.valueOf(String.valueOf(clickedButton.getTag(R.id.isClicked))) == false) {
-                    meals.add(String.valueOf(clickedButton.getTag(R.id.name)));
+//                    mealsSelected.add(String.valueOf(clickedButton.getTag(R.id.name)));
+                    mealsSelected.add(clickedButton);
                     clickedButton.setColorFilter(Color.argb(100, 230, 230, 230));
                     clickedButton.setTag(R.id.isClicked, true);
                 } else {
                     clickedButton.setColorFilter(Color.argb(0, 0, 0, 0));
-                    meals.remove(String.valueOf(clickedButton.getTag(R.id.name)));
+//                    mealsSelected.remove(String.valueOf(clickedButton.getTag(R.id.name)));
+                    mealsSelected.remove(clickedButton);
                     clickedButton.setBackgroundColor(Color.WHITE);
                     clickedButton.setTag(R.id.isClicked, false);
                 }
@@ -83,6 +87,11 @@ public class MainActivity extends AppCompatActivity implements AddMealDialogue.A
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Intent intent = new Intent(this, InstructionsActivity.class);
+//        EditText editText = (EditText) findViewById(R.id.edit_message);
+//        String message = editText.getText().toString();
+//        intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
 
         MobileAds.initialize(this, new OnInitializationCompleteListener() {
             @Override
@@ -104,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements AddMealDialogue.A
 //        //
 
         buttons = new ArrayList<ImageButton>();
-        meals = new ArrayList<String>();
+        mealsSelected = new ArrayList<ImageButton>();
 
         ImageButton pizzaBtn = new ImageButton(MainActivity.this);
 //        ImageButton spaghettiBtn = new ImageButton(MainActivity.this);
@@ -119,8 +128,8 @@ public class MainActivity extends AppCompatActivity implements AddMealDialogue.A
         uploadBtn = findViewById(R.id.uploadButton);
         chooseBtn = findViewById(R.id.choiceButton);
         choiceText = findViewById(R.id.choiceTextView);
-
-
+        searchWeb = findViewById(R.id.searchOnWeb);
+        choiceMealImage = findViewById(R.id.choiceImageView);
         for (ImageButton btn : buttons) {
             btn.setTag(R.id.isClicked, false);
             setMealImageButtonListeners(btn);
@@ -143,6 +152,15 @@ public class MainActivity extends AppCompatActivity implements AddMealDialogue.A
             }
 
         }
+        searchWeb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String url = "http://www.google.com//search?as_q="+selectedMealName;
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
+            }
+        });
         uploadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -151,7 +169,6 @@ public class MainActivity extends AppCompatActivity implements AddMealDialogue.A
                     Intent i = new Intent(
                             Intent.ACTION_PICK,
                             android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    uploadBtn.setEnabled(false);
                     startActivityForResult(i, RESULT_LOAD_IMAGE);
                 } else {
                     requestStoragePermission();
@@ -163,21 +180,31 @@ public class MainActivity extends AppCompatActivity implements AddMealDialogue.A
             @Override
             public void onClick(View v) {
                 //choiceText.setText("Short click");
-                Random rand = new Random();
-                if (meals.size() == 0) {
+                if (mealsSelected.size() == 0) {
                     choiceText.setText("Nothing selected");
+                    searchWeb.setVisibility(View.INVISIBLE);
+                    selectedMealName = "";
+                    choiceMealImage.setVisibility(View.INVISIBLE);
                 } else {
                     String result = "Result is ";
-                    String meal = meals.get(new Random().nextInt(meals.size()));
-                    String con = result.concat(meal);
-                    choiceText.setText(con);
+                    ImageButton meal = mealsSelected.get(new Random().nextInt(mealsSelected.size()));
+                    selectedMealName = String.valueOf(meal.getTag((R.id.name)));
+                    String finalResult = result.concat(String.valueOf(meal.getTag((R.id.name))));
+                    choiceText.setText(finalResult);
+                    searchWeb.setVisibility(View.VISIBLE);
+                    searchWeb.setText("Websearch for "+selectedMealName);
+                    Bitmap bitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeFile(String.valueOf(meal.getTag(R.id.picturePath))), 300, 300, true);
+                    choiceMealImage.setImageBitmap(BitmapFactory.decodeFile(String.valueOf(meal.getTag(R.id.picturePath))));
+                    choiceMealImage.setImageBitmap(bitmap);
+                    choiceMealImage.setVisibility(View.VISIBLE);
+
                 }
                 for (ImageButton btn : buttons) {
                     btn.setTag(R.id.isClicked, false);
                     btn.setBackgroundColor(Color.WHITE);
                     btn.setColorFilter(Color.argb(0, 0, 0, 0));
                 }
-                meals.clear();
+                mealsSelected.clear();
 //                if (mInterstitialAd.isLoaded()) {
 //                    mInterstitialAd.show();
 //                } else {
@@ -286,7 +313,6 @@ public class MainActivity extends AppCompatActivity implements AddMealDialogue.A
         dbHandler.addProduct(meal);
         ImageButton mealButton = new ImageButton(MainActivity.this);
         addButton(mealButton, nameFromEdit, mealPicturePath, descriptionFromEdit, recipeFromEdit);
-        uploadBtn.setEnabled(true);
     }
 
 
