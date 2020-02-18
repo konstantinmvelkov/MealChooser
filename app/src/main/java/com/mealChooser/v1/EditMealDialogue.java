@@ -52,12 +52,12 @@ public class EditMealDialogue extends AppCompatDialogFragment {
         image = view.findViewById(R.id.dialogueMealPicture);
         image.setImageBitmap(BitmapFactory.decodeFile(picturePath));
         image.setImageBitmap(bitmap);
-
         builder.setView(view)
                 // Add action buttons
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
+
                         String nameToListen = name.getText().toString();
                         String descriptionToListen = description.getText().toString();
                         String recipeToListen = recipe.getText().toString();

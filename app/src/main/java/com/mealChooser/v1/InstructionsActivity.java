@@ -17,9 +17,10 @@ public class InstructionsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_instructions);
         Intent intent = getIntent();
+        final MyDBHandler dbHandler = MainActivity.getDbHandler();
         dontShowCheckbox = findViewById(R.id.checkBoxDontShow);
         closePage = findViewById(R.id.closeHelpPageButton);
-
+        dbHandler.addShowHelp();
         closePage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -27,13 +28,14 @@ public class InstructionsActivity extends AppCompatActivity {
             }
         });
 
+
         dontShowCheckbox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(((CompoundButton) view).isChecked()){
-                    System.out.println("Checked");
+                    dbHandler.updateShowHelp();
                 } else {
-                    System.out.println("Un-Checked");
+
                 }
             }
         });

@@ -17,22 +17,48 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0">
+
+
         <TextView
             android:id="@+id/categoryText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:text="1.Select whichever foods provoke your appetite. \n2.Hit choose. \n3.The burden out of food selection is gone!"
-            android:textAlignment="center"
+            android:layout_width="302dp"
+            android:layout_height="42dp"
+
+            android:text="1.Add your meals through this button: \n They will appear on the meal scrollbar"
             android:textColor="#288fea"
             android:textSize="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.492"
+            app:layout_constraintHorizontal_bias="0.146"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.388" />
+            app:layout_constraintVertical_bias="0.265" />
 
+        <TextView
+            android:id="@+id/addMoreInstruction"
+            android:layout_width="362dp"
+            android:layout_height="101dp"
+
+            android:text="2.Select whichever foods provoke your appetite. \n3.Hit choose. \n4.The burden out of food selection is gone! \n5.Visit the web to see more information about your meal"
+            android:textColor="#288fea"
+            android:textSize="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/categoryText"
+            app:layout_constraintTop_toBottomOf="@+id/categoryText"
+            app:layout_constraintVertical_bias="0.06" />
+
+        <ImageView
+            android:layout_width="59dp"
+            android:layout_height="42dp"
+            android:src="@drawable/addmore"
+            app:layout_constraintBottom_toBottomOf="@+id/categoryText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.529"
+            app:layout_constraintStart_toEndOf="@+id/categoryText"
+            app:layout_constraintTop_toTopOf="@+id/categoryText"
+            app:layout_constraintVertical_bias="0.562" />
 
         <ImageButton
             android:id="@+id/closeHelpPageButton"
@@ -57,7 +83,7 @@
             android:layout_centerHorizontal="true"
             android:text="Don't show this again"
             android:textColor="@color/colorWhite"
-            android:paddingLeft="105dp"
+            android:paddingLeft="95dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"

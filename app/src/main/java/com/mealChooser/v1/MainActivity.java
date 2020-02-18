@@ -46,12 +46,16 @@ public class MainActivity extends AppCompatActivity implements AddMealDialogue.A
     List<ImageButton> mealsSelected;
     TextView choiceText;
     Button searchWeb;
-    MyDBHandler dbHandler;
+    public static MyDBHandler dbHandler;
     ImageButton uploadBtn;
     Button chooseBtn;
     ImageView choiceMealImage;
     private String selectedMealName="";
     private int STORAGE_PERMISSION_CODE = 1;
+
+    public static MyDBHandler getDbHandler() {
+        return dbHandler;
+    }
 
     void setMealImageButtonListeners(final ImageButton clickedButton) {
         clickedButton.setOnClickListener(new View.OnClickListener() {
@@ -87,11 +91,23 @@ public class MainActivity extends AppCompatActivity implements AddMealDialogue.A
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Intent intent = new Intent(this, InstructionsActivity.class);
-//        EditText editText = (EditText) findViewById(R.id.edit_message);
-//        String message = editText.getText().toString();
-//        intent.putExtra(EXTRA_MESSAGE, message);
-        startActivity(intent);
+
+        dbHandler = new MyDBHandler(this, null, null, 1);
+
+        LinkedHashMap<Integer, List<String>> dbShowHelp = dbHandler.getShowHelp();
+        String isDontShowAgainClicked="0";
+        if (!dbShowHelp.isEmpty()) {
+            for (int i = 0; i < dbShowHelp.size(); i++) {
+                List<String> a = dbShowHelp.get(i);
+                isDontShowAgainClicked = a.get(0);
+            }
+
+        }
+        if(!isDontShowAgainClicked.equals("1")) {
+            Intent intent = new Intent(this, InstructionsActivity.class);
+            startActivity(intent);
+        }
+
 
         MobileAds.initialize(this, new OnInitializationCompleteListener() {
             @Override
@@ -116,12 +132,9 @@ public class MainActivity extends AppCompatActivity implements AddMealDialogue.A
         mealsSelected = new ArrayList<ImageButton>();
 
         ImageButton pizzaBtn = new ImageButton(MainActivity.this);
-//        ImageButton spaghettiBtn = new ImageButton(MainActivity.this);
-//        spaghettiBtn.setBackgroundColor(Color.WHITE);
         ImageButton saladBtn = new ImageButton(MainActivity.this);
         ImageButton soupBtn = new ImageButton(MainActivity.this);
         addExistingButton(pizzaBtn, "Pizza", ((BitmapDrawable) getResources().getDrawable(R.drawable.pizzapic)).getBitmap());
-//        addExistingButton(spaghettiBtn,"Spaghetti",((BitmapDrawable) getResources().getDrawable(R.drawable.spagi)).getBitmap());
         addExistingButton(saladBtn, "Salad", ((BitmapDrawable) getResources().getDrawable(R.drawable.sala)).getBitmap());
         addExistingButton(soupBtn, "Soup", ((BitmapDrawable) getResources().getDrawable(R.drawable.soup)).getBitmap());
 
@@ -135,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements AddMealDialogue.A
             setMealImageButtonListeners(btn);
         }
 
-        dbHandler = new MyDBHandler(this, null, null, 1);
+
 
         LinkedHashMap<Integer, List<String>> dbString = dbHandler.databaseToString();
         //choiceText.setText(String.valueOf(dbString));
@@ -189,15 +202,31 @@ public class MainActivity extends AppCompatActivity implements AddMealDialogue.A
                     String result = "Result is ";
                     ImageButton meal = mealsSelected.get(new Random().nextInt(mealsSelected.size()));
                     selectedMealName = String.valueOf(meal.getTag((R.id.name)));
+                    String selectedMealDescription = String.valueOf(meal.getTag(R.id.description));
                     String finalResult = result.concat(String.valueOf(meal.getTag((R.id.name))));
                     choiceText.setText(finalResult);
                     searchWeb.setVisibility(View.VISIBLE);
                     searchWeb.setText("Websearch for "+selectedMealName);
-                    Bitmap bitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeFile(String.valueOf(meal.getTag(R.id.picturePath))), 300, 300, true);
-                    choiceMealImage.setImageBitmap(BitmapFactory.decodeFile(String.valueOf(meal.getTag(R.id.picturePath))));
-                    choiceMealImage.setImageBitmap(bitmap);
                     choiceMealImage.setVisibility(View.VISIBLE);
+                    if(meal.getTag(R.id.picturePath) != null) {
+//                        Bitmap bitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeFile(String.valueOf(meal.getTag(R.id.picturePath))), 300, 300, true);
+                        choiceMealImage.setImageBitmap(BitmapFactory.decodeFile(String.valueOf(meal.getTag(R.id.picturePath))));
+//                        choiceMealImage.setImageBitmap(bitmap);
+                    } else {
 
+                        switch(String.valueOf(meal.getTag(R.id.name))) {
+                            case "Soup":
+                                choiceMealImage.setImageBitmap(Bitmap.createScaledBitmap(((BitmapDrawable) getResources().getDrawable(R.drawable.soup)).getBitmap(), 300, 300, true));
+                                break;
+                            case "Pizza":
+                                choiceMealImage.setImageBitmap(Bitmap.createScaledBitmap(((BitmapDrawable) getResources().getDrawable(R.drawable.pizzapic)).getBitmap(), 300, 300, true));
+                                break;
+                            case "Salad":
+                                choiceMealImage.setImageBitmap(Bitmap.createScaledBitmap(((BitmapDrawable) getResources().getDrawable(R.drawable.sala)).getBitmap(), 300, 300, true));
+                                break;
+                            default:
+                        }
+                    }
                 }
                 for (ImageButton btn : buttons) {
                     btn.setTag(R.id.isClicked, false);
@@ -336,6 +365,7 @@ public class MainActivity extends AppCompatActivity implements AddMealDialogue.A
             ///////////////////////////////////////////////////
             AddMealDialogue addMeal = new AddMealDialogue(picturePath);
             addMeal.show(getSupportFragmentManager(), "editDialogue");
+
         }
     }
 }

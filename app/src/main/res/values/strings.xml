@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">My First App</string>
+    <string name="app_name">Meal Chooser</string>
     <item name="isClicked" type="id" />
     <item name="name" type="id" />
     <item name="picturePath" type="id" />
